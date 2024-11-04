@@ -3,6 +3,9 @@ const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 require('dotenv').config(); // Load environment variables
 
+const app = express();
+const PORT = process.env.PORT || 5050;
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
@@ -16,11 +19,12 @@ mongoose.connect(process.env.DB_CONNECT, {
 .catch(err => console.error('Failed to connect to MongoDB', err));
 
 // Import job-related functions
-const { addJob, viewJobs, editJob, deleteJob } = require('./utils/JobUtil');
+const { addJob, viewJobs, editJob, deleteJob, searchJobs } = require('./utils/JobUtil');
 app.post('/add-job', addJob);
 app.get('/view-jobs', viewJobs);
 app.put('/edit-job/:id', editJob);
 app.delete('/delete-job/:id', deleteJob);
+app.get('/search-jobs', searchJobs);
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" + startPage);

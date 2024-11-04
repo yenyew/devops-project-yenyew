@@ -1,70 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JobSpotter</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
     <header>
-        <h1>JobSpotter</h1>
-        <div class="search-bar">
-            <input type="text" id="keyword" placeholder="Enter Keywords">
-            <select id="classification">
-                <option>Any Classification</option>
-                <!-- Add other options here -->
-            </select>
-            <button onclick="searchJobs()">Search</button>
-            <!-- Create Job Listing Button -->
-            <button class="create-job-btn" onclick="createJob()">Create Job Listing</button>
-        </div>
+      <h1>JobSpotter</h1>
+      <div class="search-bar">
+        <input type="text" id="keyword" placeholder="Enter Keywords" />
+        <input type="text" id="location" placeholder="Enter Location" />
+        <!-- Optional -->
+        <select id="classification">
+          <option>Any Classification</option>
+          <option>IT</option>
+          <option>Marketing</option>
+          <option>Finance</option>
+        </select>
+        <button onclick="searchJobs()">Search</button>
+      </div>
     </header>
 
     <div id="job-listings" class="container">
-        <!-- Job listings will be displayed here -->
+      <!-- Job listings will be displayed here -->
     </div>
 
     <footer>
-        <p>JobSpotter © 2024</p>
+      <p>JobSpotter © 2024</p>
     </footer>
 
     <script>
-        function createJob() {
-            window.location.href = '/create-job';
+      function createJob() {
+        window.location.href = "/create-job";
+      }
+
+      function applyJob(jobId) {
+        window.location.href = `/apply-job/${jobId}`;
+      }
+
+      function updateJob(jobId) {
+        window.location.href = `/update-job/${jobId}`;
+      }
+
+      async function searchJobs() {
+        const keyword = document.getElementById("keyword").value;
+        const location = document.getElementById("location").value;
+        const classification = document.getElementById("classification").value;
+
+        const query = new URLSearchParams({
+          keyword: keyword || "",
+          location: location || "Any Location",
+          classification: classification || "Any Classification",
+        });
+
+        try {
+          const response = await fetch(`/search-jobs?${query.toString()}`);
+          const jobs = await response.json();
+          displayJobs(jobs);
+        } catch (error) {
+          console.error("Error searching jobs:", error);
+        }
+      }
+
+      async function loadJobs() {
+        try {
+          const response = await fetch("/view-jobs");
+          const jobs = await response.json();
+          displayJobs(jobs);
+        } catch (error) {
+          console.error("Error fetching jobs:", error);
+        }
+      }
+
+      function displayJobs(jobs) {
+        const jobListings = document.getElementById("job-listings");
+        jobListings.innerHTML = "";
+
+        if (jobs.length === 0) {
+          jobListings.innerHTML = "<p>No job listings found.</p>";
+          return;
         }
 
-        function applyJob(jobId) {
-            window.location.href = `/apply-job/${jobId}`;
-        }
-
-        function updateJob(jobId) {
-            window.location.href = `/update-job/${jobId}`;
-        }
-
-        async function loadJobs() {
-            try {
-                const response = await fetch('/view-jobs');
-                const jobs = await response.json();
-                displayJobs(jobs);
-            } catch (error) {
-                console.error('Error fetching jobs:', error);
-            }
-        }
-
-        function displayJobs(jobs) {
-            const jobListings = document.getElementById('job-listings');
-            jobListings.innerHTML = '';
-
-            if (jobs.length === 0) {
-                jobListings.innerHTML = '<p>No job listings found.</p>';
-                return;
-            }
-
-            jobs.forEach(job => {
-                const jobCard = document.createElement('div');
-                jobCard.classList.add('job-listing');
-                jobCard.innerHTML = `
+        jobs.forEach((job) => {
+          const jobCard = document.createElement("div");
+          jobCard.classList.add("job-listing");
+          jobCard.innerHTML = `
                     <div class="job-header">
                         <h2>${job.name}</h2>
                         <div class="job-actions">
@@ -78,11 +100,11 @@
                     <p class="email">Contact: <a href="mailto:${job.companyEmail}">${job.companyEmail}</a></p>
                     <p>${job.description}</p>
                 `;
-                jobListings.appendChild(jobCard);
-            });
-        }
+          jobListings.appendChild(jobCard);
+        });
+      }
 
-        window.onload = loadJobs;
+      window.onload = loadJobs;
     </script>
-</body>
+  </body>
 </html>
