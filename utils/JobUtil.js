@@ -91,8 +91,6 @@ async function deleteJob(req, res) {
 }
 
 module.exports = {
-    addJob,
-    viewJobs,
-    editJob,
-    deleteJob
+  readJSON,
+  writeJSON,
 };
