@@ -1,4 +1,4 @@
-const { Resource } = require("../models/Resource");
+const { jobs } = require("../models/jobs");
 const fs = require("fs").promises;
 async function readJSON(filename) {
   try {
@@ -25,5 +25,4 @@ async function writeJSON(object, filename) {
 module.exports = {
   readJSON,
   writeJSON,
-  addResource,
 };
