@@ -16,6 +16,8 @@
                 <!-- Add other options here -->
             </select>
             <button onclick="searchJobs()">Search</button>
+            <!-- Create Job Listing Button -->
+            <button class="create-job-btn" onclick="createJob()">Create Job Listing</button>
         </div>
     </header>
 
@@ -28,7 +30,18 @@
     </footer>
 
     <script>
-        // Fetch and display jobs
+        function createJob() {
+            window.location.href = '/create-job';
+        }
+
+        function applyJob(jobId) {
+            window.location.href = `/apply-job/${jobId}`;
+        }
+
+        function updateJob(jobId) {
+            window.location.href = `/update-job/${jobId}`;
+        }
+
         async function loadJobs() {
             try {
                 const response = await fetch('/view-jobs');
@@ -39,7 +52,6 @@
             }
         }
 
-        // Display jobs in the job listings section
         function displayJobs(jobs) {
             const jobListings = document.getElementById('job-listings');
             jobListings.innerHTML = '';
@@ -53,19 +65,24 @@
                 const jobCard = document.createElement('div');
                 jobCard.classList.add('job-listing');
                 jobCard.innerHTML = `
-                    <h2>${job.name}</h2>
+                    <div class="job-header">
+                        <h2>${job.name}</h2>
+                        <div class="job-actions">
+                            <button onclick="applyJob('${job._id}')">Apply Job</button>
+                            <button onclick="updateJob('${job._id}')">Update Job Listing</button>
+                        </div>
+                    </div>
                     <p class="location">Location: ${job.location}</p>
-                    <p class="company">Owner: ${job.owner}</p>
+                    <p class="company">Company: ${job.companyName}</p>
+                    <p class="salary">Salary: $${job.salary}</p>
+                    <p class="email">Contact: <a href="mailto:${job.companyEmail}">${job.companyEmail}</a></p>
                     <p>${job.description}</p>
                 `;
                 jobListings.appendChild(jobCard);
             });
         }
 
-        // Load jobs on page load
         window.onload = loadJobs;
     </script>
 </body>
 </html>
-
-  

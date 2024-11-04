@@ -1,12 +1,12 @@
-const Job = require('../models/jobs'); // Import the Job model
+const Job = require('../models/jobs');
 
 // Add a new job
 async function addJob(req, res) {
     try {
-        const { name, location, description, owner } = req.body;
+        const { name, location, description, salary, companyEmail, companyName } = req.body;
 
-        // Validate job details
-        if (!owner.includes('@') || !owner.includes('.') || description.length < 6) {
+        // Validate required fields
+        if (!companyEmail.includes('@') || !companyEmail.includes('.') || description.length < 6) {
             return res.status(400).json({ message: 'Validation error' });
         }
 
@@ -15,7 +15,9 @@ async function addJob(req, res) {
             name,
             location,
             description,
-            owner
+            salary,
+            companyEmail,
+            companyName
         });
 
         const savedJob = await newJob.save();
@@ -41,7 +43,7 @@ async function viewJobs(req, res) {
 async function editJob(req, res) {
     try {
         const id = req.params.id;
-        const { name, location, description } = req.body;
+        const { name, location, description, salary, companyEmail, companyName } = req.body;
 
         // Update job by ID
         const updatedJob = await Job.findByIdAndUpdate(
@@ -50,6 +52,9 @@ async function editJob(req, res) {
                 name,
                 location,
                 description,
+                salary,
+                companyEmail,
+                companyName,
                 updated_at: new Date() // Set updated_at to the current time
             },
             { new: true } // Return the modified document
