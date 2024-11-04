@@ -19,10 +19,11 @@ mongoose.connect(process.env.DB_CONNECT, {
 .catch(err => console.error('Failed to connect to MongoDB', err));
 
 // Import job-related functions
-const { addJob, viewJobs, editJob, deleteJob } = require('./utils/JobUtil');
+const { addJob, viewJobs, editJob, deleteJob, getJobById } = require('./utils/JobUtil');
 app.post('/add-job', addJob);
 app.get('/view-jobs', viewJobs);
 app.put('/edit-job/:id', editJob);
+app.get('/view-job/:id', getJobById);
 app.delete('/delete-job/:id', deleteJob);
 
 app.get('/', (req, res) => {

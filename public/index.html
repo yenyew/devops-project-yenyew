@@ -16,13 +16,43 @@
                 <!-- Add other options here -->
             </select>
             <button onclick="searchJobs()">Search</button>
-            <!-- Create Job Listing Button -->
             <button class="create-job-btn" onclick="createJob()">Create Job Listing</button>
         </div>
     </header>
 
     <div id="job-listings" class="container">
         <!-- Job listings will be displayed here -->
+    </div>
+
+    <!-- Modal for updating job listing -->
+    <div id="updateJobModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h2>Update Job Listing</h2>
+            <form id="updateJobForm">
+                <input type="hidden" id="jobId">
+                
+                <label for="jobName">Job Name:</label>
+                <input type="text" id="jobName" name="name" class="modal-input" required>
+                
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" class="modal-input" required>
+                
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="modal-input" required></textarea>
+                
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="salary" class="modal-input" required>
+                
+                <label for="companyEmail">Company Email:</label>
+                <input type="email" id="companyEmail" name="companyEmail" class="modal-input" required>
+                
+                <label for="companyName">Company Name:</label>
+                <input type="text" id="companyName" name="companyName" class="modal-input" required>
+                
+                <button type="button" onclick="submitJobUpdate()" class="modal-button">Update Job</button>
+            </form>
+        </div>
     </div>
 
     <footer>
@@ -36,10 +66,6 @@
 
         function applyJob(jobId) {
             window.location.href = `/apply-job/${jobId}`;
-        }
-
-        function updateJob(jobId) {
-            window.location.href = `/update-job/${jobId}`;
         }
 
         async function loadJobs() {
@@ -80,6 +106,112 @@
                 `;
                 jobListings.appendChild(jobCard);
             });
+        }
+
+        async function updateJob(jobId) {
+            try {
+                const response = await fetch(`/view-job/${jobId}`);
+                const job = await response.json();
+
+                document.getElementById('jobId').value = job._id;
+                document.getElementById('jobName').value = job.name;
+                document.getElementById('location').value = job.location;
+                document.getElementById('description').value = job.description;
+                document.getElementById('salary').value = job.salary;
+                document.getElementById('companyEmail').value = job.companyEmail;
+                document.getElementById('companyName').value = job.companyName;
+
+                // Display the modal
+                document.getElementById('updateJobModal').style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching job:', error);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('updateJobModal').style.display = 'none';
+        }
+
+        async function submitJobUpdate() {
+            // Retrieve form field values
+            const jobId = document.getElementById('jobId').value;
+            const jobName = document.getElementById('jobName').value.trim();
+            const location = document.getElementById('location').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const salary = document.getElementById('salary').value;
+            const companyEmail = document.getElementById('companyEmail').value.trim();
+            const companyName = document.getElementById('companyName').value.trim();
+
+            // Email validation regex
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Check for empty fields
+            if (!jobName) {
+                alert("Job Name cannot be empty.");
+                return;
+            }
+            if (!location) {
+                alert("Location cannot be empty.");
+                return;
+            }
+            if (!description) {
+                alert("Description cannot be empty.");
+                return;
+            }
+            if (!salary || salary <= 0) {
+                alert("Please enter a valid salary.");
+                return;
+            }
+            if (!companyEmail) {
+                alert("Company Email cannot be empty.");
+                return;
+            }
+            if (!emailRegex.test(companyEmail)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            if (!companyName) {
+                alert("Company Name cannot be empty.");
+                return;
+            }
+
+            // If all validations pass, prepare data to send
+            const jobData = {
+                name: jobName,
+                location: location,
+                description: description,
+                salary: salary,
+                companyEmail: companyEmail,
+                companyName: companyName
+            };
+
+            // Submit the data to the backend
+            try {
+                const response = await fetch(`/edit-job/${jobId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jobData)
+                });
+
+                if (response.ok) {
+                    alert('Job updated successfully!');
+                    closeModal();
+                    loadJobs(); // Refresh the job list
+                } else {
+                    alert('Error updating job');
+                }
+            } catch (error) {
+                console.error('Error updating job:', error);
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('updateJobModal');
+            if (event.target === modal) {
+                closeModal();
+            }
         }
 
         window.onload = loadJobs;

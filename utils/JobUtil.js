@@ -6,7 +6,8 @@ async function addJob(req, res) {
         const { name, location, description, salary, companyEmail, companyName } = req.body;
 
         // Validate required fields
-        if (!companyEmail.includes('@') || !companyEmail.includes('.') || description.length < 6) {
+        const emailRegex = /\S+@\S+\.\S+/;
+        if (!emailRegex.test(companyEmail) || description.length < 6) {
             return res.status(400).json({ message: 'Validation error' });
         }
 
@@ -39,37 +40,23 @@ async function viewJobs(req, res) {
     }
 }
 
-// Edit a job
-async function editJob(req, res) {
+// Get a job by ID
+async function getJobById(req, res) {
     try {
         const id = req.params.id;
-        const { name, location, description, salary, companyEmail, companyName } = req.body;
-
-        // Update job by ID
-        const updatedJob = await Job.findByIdAndUpdate(
-            id,
-            {
-                name,
-                location,
-                description,
-                salary,
-                companyEmail,
-                companyName,
-                updated_at: new Date() // Set updated_at to the current time
-            },
-            { new: true } // Return the modified document
-        );
-
-        if (updatedJob) {
-            return res.status(200).json({ message: 'Job modified successfully!', job: updatedJob });
+        const job = await Job.findById(id);
+        
+        if (job) {
+            res.status(200).json(job);
         } else {
-            return res.status(404).json({ message: 'Job not found' });
+            res.status(404).json({ message: 'Job not found' });
         }
     } catch (error) {
-        console.error("Error editing job:", error);
-        return res.status(500).json({ message: error.message });
+        console.error("Error fetching job:", error);
+        res.status(500).json({ message: error.message });
     }
 }
+
 
 // Delete a job
 async function deleteJob(req, res) {
@@ -90,9 +77,43 @@ async function deleteJob(req, res) {
     }
 }
 
+// Get a job by ID
+async function getJobById(req, res) {
+  try {
+      const job = await Job.findById(req.params.id);
+      if (job) {
+          res.status(200).json(job);
+      } else {
+          res.status(404).json({ message: 'Job not found' });
+      }
+  } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ message: error.message });
+  }
+}
+
+// Edit a job
+async function editJob(req, res) {
+  try {
+      const id = req.params.id;
+      const updatedData = req.body;
+
+      const updatedJob = await Job.findByIdAndUpdate(id, updatedData, { new: true });
+      if (updatedJob) {
+          return res.status(200).json(updatedJob);
+      } else {
+          return res.status(404).json({ message: 'Job not found' });
+      }
+  } catch (error) {
+      console.error("Error editing job:", error);
+      return res.status(500).json({ message: error.message });
+  }
+}
+
 module.exports = {
-    addJob,
-    viewJobs,
-    editJob,
-    deleteJob
+  addJob,
+  viewJobs,
+  editJob,
+  deleteJob,
+  getJobById
 };
