@@ -1,12 +1,71 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>DVOPS - Resource Management Web App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobSpotter</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
-
 <body>
-    Welcome to my Resource Management Web Application. In this application, users
-    will get to manage resources.
-</body>
+    <header>
+        <h1>JobSpotter</h1>
+        <div class="search-bar">
+            <input type="text" id="keyword" placeholder="Enter Keywords">
+            <select id="classification">
+                <option>Any Classification</option>
+                <!-- Add other options here -->
+            </select>
+            <button onclick="searchJobs()">Search</button>
+        </div>
+    </header>
 
+    <div id="job-listings" class="container">
+        <!-- Job listings will be displayed here -->
+    </div>
+
+    <footer>
+        <p>JobSpotter © 2024</p>
+    </footer>
+
+    <script>
+        // Fetch and display jobs
+        async function loadJobs() {
+            try {
+                const response = await fetch('/view-jobs');
+                const jobs = await response.json();
+                displayJobs(jobs);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        }
+
+        // Display jobs in the job listings section
+        function displayJobs(jobs) {
+            const jobListings = document.getElementById('job-listings');
+            jobListings.innerHTML = '';
+
+            if (jobs.length === 0) {
+                jobListings.innerHTML = '<p>No job listings found.</p>';
+                return;
+            }
+
+            jobs.forEach(job => {
+                const jobCard = document.createElement('div');
+                jobCard.classList.add('job-listing');
+                jobCard.innerHTML = `
+                    <h2>${job.name}</h2>
+                    <p class="location">Location: ${job.location}</p>
+                    <p class="company">Owner: ${job.owner}</p>
+                    <p>${job.description}</p>
+                `;
+                jobListings.appendChild(jobCard);
+            });
+        }
+
+        // Load jobs on page load
+        window.onload = loadJobs;
+    </script>
+</body>
 </html>
+
+  
