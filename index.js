@@ -3,10 +3,6 @@ const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
 require('dotenv').config(); // Load environment variables
 
-const app = express();
-const PORT = process.env.PORT || 5050;
-const startPage = "index.html";
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
