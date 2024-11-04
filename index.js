@@ -1,24 +1,39 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 const mongoose = require('mongoose');
-require('dotenv').config();
+require('dotenv').config(); // Load environment variables
 
 const app = express();
 const PORT = process.env.PORT || 5050;
+const startPage = "index.html";
 
-// Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-// Routes
-const jobRoutes = require('./routes/jobRoutes');
-app.use('/api', jobRoutes);
+app.use(express.static("./public"));
 
 // MongoDB connection
-mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected...'))
-  .catch(err => console.log(err));
+mongoose.connect(process.env.DB_CONNECT, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Failed to connect to MongoDB', err));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Import job-related functions
+const { addJob, viewJobs, editJob, deleteJob } = require('./utils/JobUtil');
+app.post('/add-job', addJob);
+app.get('/view-jobs', viewJobs);
+app.put('/edit-job/:id', editJob);
+app.delete('/delete-job/:id', deleteJob);
+
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + "/public/" + startPage);
 });
+
+const server = app.listen(PORT, function () {
+    const address = server.address();
+    const baseUrl = `http://${address.address === "::" ? 'localhost' : address.address}:${address.port}`;
+    console.log(`Demo project at: ${baseUrl}`);
+});
+
+module.exports = { app, server };
