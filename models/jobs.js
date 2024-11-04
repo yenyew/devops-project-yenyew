@@ -1,12 +1,26 @@
-class Jobs {
-constructor(name, location, description, owner) {
-    this.name = name;
-    this.location = location;
-    this.description = description;
-    this.owner = owner;
-    const timestamp = new Date().getTime();
-    const random = Math.floor(Math.random() * 1000);
-    this.id = timestamp + "" + random.toString().padStart(3, '0');
+const mongoose = require('mongoose');
+
+const jobSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    owner: {
+        type: String,
+        required: true
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
     }
-    }
-    module.exports = { Jobs };
+});
+
+module.exports = mongoose.model('Job', jobSchema);
