@@ -149,7 +149,6 @@ footer {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-/* Modal Content */
 .modal-content {
     background-color: #fefefe;
     margin: 10% auto;
@@ -157,6 +156,8 @@ footer {
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
+    max-height: 80vh; 
+    overflow-y: auto; 
     border-radius: 5px;
 }
 
