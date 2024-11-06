@@ -1,6 +1,10 @@
-const Job = require('../models/jobs');
-const Application = require('../models/application'); // Import the Application model
+// Import the Job model for job listings (from jobs.js in the root directory)
+const Job = require('../jobs'); 
 
+// Import the Application model for job applications (from application.js in the models folder)
+const Application = require('../models/application'); 
+
+// Function to handle job application
 async function applyjob(req, res) {
     try {
         const { name, age, education, phone } = req.body;
@@ -21,6 +25,7 @@ async function applyjob(req, res) {
     }
 }
 
+// Export the applyjob function
 module.exports = {
     applyjob
 };
