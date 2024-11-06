@@ -28,7 +28,7 @@ app.get('/view-job/:id', getJobById);
 
 const { viewJobs } = require('./utils/view-job');
 app.get('/view-jobs', viewJobs);
- main
+
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
