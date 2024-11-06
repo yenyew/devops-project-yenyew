@@ -22,6 +22,16 @@ mongoose.connect(process.env.DB_CONNECT, {
 const { searchJobs } = require('./utils/searchJob.js');
 app.get('/search-jobs', searchJobs);
 
+const { addJob} = require('./utils/create-job');
+app.post('/add-job', addJob);
+
+const { editJob, getJobById } = require('./utils/update-job');
+app.put('/edit-job/:id', editJob);
+app.get('/view-job/:id', getJobById);
+
+const { viewJobs } = require('./utils/view-job');
+app.get('/view-jobs', viewJobs);
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/" + startPage);
 });
