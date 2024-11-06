@@ -38,25 +38,25 @@
             <h2>Update Job Listing</h2>
             <form id="updateJobForm">
                 <input type="hidden" id="jobId">
-                
+
                 <label for="jobName">Job Name:</label>
                 <input type="text" id="jobName" name="name" class="modal-input" required>
-                
+
                 <label for="location">Location:</label>
                 <input type="text" id="location" name="location" class="modal-input" required>
-                
+
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" class="modal-input" required></textarea>
-                
+
                 <label for="salary">Salary:</label>
                 <input type="number" id="salary" name="salary" class="modal-input" required>
-                
+
                 <label for="companyEmail">Company Email:</label>
                 <input type="email" id="companyEmail" name="companyEmail" class="modal-input" required>
-                
+
                 <label for="companyName">Company Name:</label>
                 <input type="text" id="companyName" name="companyName" class="modal-input" required>
-                
+
                 <button type="button" onclick="submitJobUpdate()" class="modal-button">Update Job</button>
             </form>
         </div>
@@ -80,54 +80,58 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <label for="name">Job Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter job name">
+                            <label for="addJobName">Job Name</label>
+                            <input type="text" class="form-control" id="addJobName" placeholder="Enter job name">
                         </div>
                         <div class="form-group">
-                            <label for="location">Location</label>
-                            <input type="text" class="form-control" id="location" placeholder="Enter job location">
+                            <label for="addLocation">Location</label>
+                            <input type="text" class="form-control" id="addLocation" placeholder="Enter job location">
                         </div>
                         <div class="form-group">
-                            <label for="description">Description</label>
-                            <input type="text" class="form-control" id="description"
+                            <label for="addDescription">Description</label>
+                            <input type="text" class="form-control" id="addDescription"
                                 placeholder="Enter Job description">
                         </div>
                         <div class="form-group">
-                            <label for="salary">Salary</label>
-                            <input type="text" class="form-control" id="salary" placeholder="Enter job salary">
+                            <label for="addSalary">Salary</label>
+                            <input type="text" class="form-control" id="addSalary" placeholder="Enter job salary">
                         </div>
                         <div class="form-group">
-                            <label for="companyEmail">Company Email</label>
-                            <input type="text" class="form-control" id="companyEmail" placeholder="Enter company email">
+                            <label for="addCompanyEmail">Company Email</label>
+                            <input type="text" class="form-control" id="addCompanyEmail"
+                                placeholder="Enter company email">
                         </div>
                         <div class="form-group">
-                            <label for="companyName">Company Name</label>
-                            <input type="text" class="form-control" id="companyName" placeholder="Enter Company Name">
+                            <label for="addCompanyName">Company Name</label>
+                            <input type="text" class="form-control" id="addCompanyName"
+                                placeholder="Enter Company Name">
                         </div>
                         <p align="right" id="message" class=""></p>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="addJob()">Add
-                        New Job</button>
+                    <button type="button" class="btn btn-primary" onclick="addJob()">Add New Job</button>
                 </div>
             </div>
         </div>
     </div>
 
+
     <!-- Scripts for Bootstrap modal functionality -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+       
+
         async function addJob() {
             // Collect form data
-            const name = document.getElementById('name').value;
-            const location = document.getElementById('location').value;
-            const description = document.getElementById('description').value;
-            const salary = document.getElementById('salary').value;
-            const companyEmail = document.getElementById('companyEmail').value;
-            const companyName = document.getElementById('companyName').value;
+            const name = document.getElementById('addJobName').value;
+            const location = document.getElementById('addLocation').value;
+            const description = document.getElementById('addDescription').value;
+            const salary = document.getElementById('addSalary').value;
+            const companyEmail = document.getElementById('addCompanyEmail').value;
+            const companyName = document.getElementById('addCompanyName').value;
 
             // Create a job object
             const jobData = {
@@ -306,7 +310,7 @@
             }
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('updateJobModal');
             if (event.target === modal) {
                 closeModal();
