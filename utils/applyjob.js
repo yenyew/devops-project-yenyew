@@ -1,6 +1,3 @@
-// Import the Job model for job listings (from jobs.js in the root directory)
-const Job = require('../jobs'); 
-
 // Import the Application model for job applications (from application.js in the models folder)
 const Application = require('../models/application'); 
 
