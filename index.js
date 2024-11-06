@@ -1,24 +1,34 @@
-var express = require('express');
-var bodyParser = require("body-parser");
-var app = express();
+const express = require('express');
+const bodyParser = require("body-parser");
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-const PORT = process.env.PORT || 5050
-var startPage = "index.html";
+const app = express();
+const PORT = process.env.PORT || 5050;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("./public"));
 
-const { applyjob } = require('./utils/JobUtil')
-app.post('/apply-job', applyjob);
+// Connect to MongoDB
+mongoose.connect(process.env.DB_CONNECT, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+})
+.then(() => console.log('Connected to MongoDB'))
+.catch(err => console.error('Failed to connect to MongoDB', err));
+
+// Import job-related functions
+const {applyjob } = require('./utils/applyjob');
+
+app.post('/apply-job',applyjob);
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + "/public/" + startPage);
-})
-server = app.listen(PORT, function () {
-  const address = server.address();
-  const baseUrl = `http://${address.address == "::" ? 'localhost' :
-    address.address}:${address.port}`;
-  console.log(`Demo project at: ${baseUrl}`);
+    res.sendFile(__dirname + "/public/index.html");
 });
-module.exports = { app, server }
+
+const server = app.listen(PORT, function () {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+
+module.exports = { app, server };
