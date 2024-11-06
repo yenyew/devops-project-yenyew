@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +22,7 @@
     </header>
  
     <div id="job-listings" class="container">
+
         <!-- Job listings will be displayed here -->
     </div>
  
@@ -140,6 +142,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+      
         async function addJob() {
             const name = document.getElementById('addJobName').value;
             const location = document.getElementById('addLocation').value;
@@ -229,6 +232,24 @@
                 console.error('Error fetching jobs:', error);
             }
         }
+      
+      async function searchJobs() {
+        const keyword = document.getElementById("keyword").value;
+        const classification = document.getElementById("classification").value;
+        const query = new URLSearchParams({ keyword, classification }).toString();
+
+        try {
+          const response = await fetch(`/search-jobs?${query}`, { method: "GET" });
+          if (response.ok) {
+            const jobs = await response.json();
+            displayJobs(jobs);
+          } else {
+            alert("Error searching jobs");
+          }
+        } catch (error) {
+          console.error("Error searching jobs:", error);
+        }
+      }
  
         function displayJobs(jobs) {
             const jobListings = document.getElementById('job-listings');

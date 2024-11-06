@@ -19,7 +19,10 @@ mongoose.connect(process.env.DB_CONNECT, {
 .catch(err => console.error('Failed to connect to MongoDB', err));
  
 // Import job-related functions
-const { addJob} = require('./utils/create-job');
+const { searchJobs } = require('./utils/search-job.js');
+app.get('/search-jobs', searchJobs);
+
+const { addJob } = require('./utils/create-job');
 app.post('/add-job', addJob);
  
 const { editJob, getJobById } = require('./utils/update-job');
@@ -28,17 +31,18 @@ app.get('/view-job/:id', getJobById);
  
 const { viewJobs } = require('./utils/view-job');
 app.get('/view-jobs', viewJobs);
- 
+
 const { applyjob } = require('./utils/applyjob');
 app.post('/apply-job/:jobId', applyjob);
- 
  
 app.get('/', (req, res) => {
     res.sendFile(__dirname + "/public/index.html");
 });
  
 const server = app.listen(PORT, function () {
-    console.log(`Server running on http://localhost:${PORT}`);
+    const address = server.address();
+    const baseUrl = `http://${address.address === "::" ? 'localhost' : address.address}:${address.port}`;
+    console.log(`Demo project at: ${baseUrl}`);
 });
  
 module.exports = { app, server };
