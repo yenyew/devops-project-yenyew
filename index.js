@@ -27,7 +27,10 @@ app.put('/edit-job/:id', editJob);
 app.get('/view-job/:id', getJobById);
  
 const { viewJobs } = require('./utils/view-job');
-app.get('/view-jobs', viewJobs);
+app.get('/view-jobs', viewJobs); 
+
+const { applyjob } = require('./utils/applyjob');
+app.get('/apply-jobs', applyjob);
  
  
 app.get('/', (req, res) => {

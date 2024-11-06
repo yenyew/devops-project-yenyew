@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JobSpotter</title>
+
     <link rel="stylesheet" href="/css/styles.css">
     <!-- Bootstrap CSS (required for modal functionality) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -116,14 +117,53 @@
             </div>
         </div>
     </div>
- 
- 
+
+    <!-- Apply Job Modal -->
+    <div class="modal fade" id="applyJobModal" tabindex="-1" role="dialog" aria-labelledby="applyJobModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="applyJobModalLabel">Apply for Job</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="applyJobForm">
+                        <div class="form-group">
+                            <label for="applicantName">Name</label>
+                            <input type="text" class="form-control" id="applicantName" placeholder="Enter your name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="applicantAge">Age</label>
+                            <input type="number" class="form-control" id="applicantAge" placeholder="Enter your age" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="applicantEducation">Education</label>
+                            <input type="text" class="form-control" id="applicantEducation" placeholder="Enter your highest education" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="applicantPhone">Phone Number</label>
+                            <input type="tel" class="form-control" id="applicantPhone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="applicantEmail">Email</label>
+                            <input type="email" class="form-control" id="applicantEmail" placeholder="Enter your email" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitApplication()">Submit Application</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts for Bootstrap modal functionality -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-       
- 
         async function addJob() {
             // Collect form data
             const name = document.getElementById('addJobName').value;
@@ -132,7 +172,7 @@
             const salary = document.getElementById('addSalary').value;
             const companyEmail = document.getElementById('addCompanyEmail').value;
             const companyName = document.getElementById('addCompanyName').value;
- 
+
             // Create a job object
             const jobData = {
                 name,
@@ -142,9 +182,8 @@
                 companyEmail,
                 companyName
             };
- 
+
             try {
-                // Send a POST request to the backend
                 const response = await fetch('/add-job', {
                     method: 'POST',
                     headers: {
@@ -152,8 +191,7 @@
                     },
                     body: JSON.stringify(jobData)
                 });
- 
-                // Handle the response
+
                 const result = await response.json();
                 if (response.ok) {
                     alert('Job added successfully!');
@@ -166,159 +204,49 @@
                 alert('An error occurred while adding the job.');
             }
         }
- 
+
         function applyJob(jobId) {
-            window.location.href = `/apply-job/${jobId}`;
+            $('#applyJobModal').modal('show');
         }
- 
-        async function loadJobs() {
-            try {
-                const response = await fetch('/view-jobs');
-                const jobs = await response.json();
-                displayJobs(jobs);
-            } catch (error) {
-                console.error('Error fetching jobs:', error);
-            }
-        }
- 
-        function displayJobs(jobs) {
-            const jobListings = document.getElementById('job-listings');
-            jobListings.innerHTML = '';
- 
-            if (jobs.length === 0) {
-                jobListings.innerHTML = '<p>No job listings found.</p>';
-                return;
-            }
- 
-            jobs.forEach(job => {
-                const jobCard = document.createElement('div');
-                jobCard.classList.add('job-listing');
-                jobCard.innerHTML = `
-                    <div class="job-header">
-                        <h2>${job.name}</h2>
-                        <div class="job-actions">
-                            <button onclick="applyJob('${job._id}')">Apply Job</button>
-                            <button onclick="updateJob('${job._id}')">Update Job Listing</button>
-                        </div>
-                    </div>
-                    <p class="location">Location: ${job.location}</p>
-                    <p class="company">Company: ${job.companyName}</p>
-                    <p class="salary">Salary: $${job.salary}</p>
-                    <p class="email">Contact: <a href="mailto:${job.companyEmail}">${job.companyEmail}</a></p>
-                    <p>${job.description}</p>
-                `;
-                jobListings.appendChild(jobCard);
-            });
-        }
- 
-        async function updateJob(jobId) {
-            try {
-                const response = await fetch(`/view-job/${jobId}`);
-                const job = await response.json();
- 
-                document.getElementById('jobId').value = job._id;
-                document.getElementById('jobName').value = job.name;
-                document.getElementById('location').value = job.location;
-                document.getElementById('description').value = job.description;
-                document.getElementById('salary').value = job.salary;
-                document.getElementById('companyEmail').value = job.companyEmail;
-                document.getElementById('companyName').value = job.companyName;
- 
-                // Display the modal
-                document.getElementById('updateJobModal').style.display = 'block';
-            } catch (error) {
-                console.error('Error fetching job:', error);
-            }
-        }
- 
-        function closeModal() {
-            document.getElementById('updateJobModal').style.display = 'none';
-        }
- 
-        async function submitJobUpdate() {
-            // Retrieve form field values
-            const jobId = document.getElementById('jobId').value;
-            const jobName = document.getElementById('jobName').value.trim();
-            const location = document.getElementById('location').value.trim();
-            const description = document.getElementById('description').value.trim();
-            const salary = document.getElementById('salary').value;
-            const companyEmail = document.getElementById('companyEmail').value.trim();
-            const companyName = document.getElementById('companyName').value.trim();
- 
-            // Email validation regex
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
- 
-            // Check for empty fields
-            if (!jobName) {
-                alert("Job Name cannot be empty.");
-                return;
-            }
-            if (!location) {
-                alert("Location cannot be empty.");
-                return;
-            }
-            if (!description) {
-                alert("Description cannot be empty.");
-                return;
-            }
-            if (!salary || salary <= 0) {
-                alert("Please enter a valid salary.");
-                return;
-            }
-            if (!companyEmail) {
-                alert("Company Email cannot be empty.");
-                return;
-            }
-            if (!emailRegex.test(companyEmail)) {
-                alert("Please enter a valid email address.");
-                return;
-            }
-            if (!companyName) {
-                alert("Company Name cannot be empty.");
-                return;
-            }
- 
-            // If all validations pass, prepare data to send
-            const jobData = {
-                name: jobName,
-                location: location,
-                description: description,
-                salary: salary,
-                companyEmail: companyEmail,
-                companyName: companyName
+
+        async function submitApplication() {
+            const applicantName = document.getElementById('applicantName').value;
+            const applicantAge = document.getElementById('applicantAge').value;
+            const applicantEducation = document.getElementById('applicantEducation').value;
+            const applicantPhone = document.getElementById('applicantPhone').value;
+            const applicantEmail = document.getElementById('applicantEmail').value;
+
+            const applicationData = {
+                applicantName,
+                applicantAge,
+                applicantEducation,
+                applicantPhone,
+                applicantEmail
             };
- 
-            // Submit the data to the backend
+
             try {
-                const response = await fetch(`/edit-job/${jobId}`, {
-                    method: 'PUT',
+                const response = await fetch('/apply-job', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(jobData)
+                    body: JSON.stringify(applicationData)
                 });
- 
+
                 if (response.ok) {
-                    alert('Job updated successfully!');
-                    closeModal();
-                    loadJobs(); // Refresh the job list
+                    alert('Application submitted successfully!');
+                    $('#applyJobModal').modal('hide');
                 } else {
-                    alert('Error updating job');
+                    const result = await response.json();
+                    alert('Failed to submit application: ' + result.message);
                 }
             } catch (error) {
-                console.error('Error updating job:', error);
+                console.error('Error submitting application:', error);
+                alert('An error occurred while submitting the application.');
             }
         }
- 
-        window.onclick = function (event) {
-            const modal = document.getElementById('updateJobModal');
-            if (event.target === modal) {
-                closeModal();
-            }
-        }
- 
+
         window.onload = loadJobs;
     </script>
 </body>
- 
 </html>
