@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+ 
 const jobSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -39,5 +39,5 @@ const jobSchema = new mongoose.Schema({
         type: Date
     }
 });
-
+ 
 module.exports = mongoose.model('Job', jobSchema);
