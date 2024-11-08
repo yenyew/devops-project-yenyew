@@ -11,10 +11,8 @@ app.use(bodyParser.json());
 app.use(express.static("./public"));
  
 // Connect to MongoDB
-mongoose.connect(process.env.DB_CONNECT, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
+mongoose.connect(process.env.DB_CONNECT)
+
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('Failed to connect to MongoDB', err));
  
@@ -42,7 +40,8 @@ app.get('/', (req, res) => {
 const server = app.listen(PORT, function () {
     const address = server.address();
     const baseUrl = `http://${address.address === "::" ? 'localhost' : address.address}:${address.port}`;
-    console.log(`Demo project at: ${baseUrl}`);
+    console.log(`Devops project at: ${baseUrl}`);
+    console.log(`DevOps project at: ${baseUrl}`);
 });
  
 module.exports = { app, server };
