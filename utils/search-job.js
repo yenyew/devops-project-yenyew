@@ -19,7 +19,7 @@ async function searchJobs(req, res) {
         }
 
         if (classification && classification !== 'Any Classification') {
-            query.classification = new RegExp(classification, 'i');  // Assuming classification field exists in Job schema
+            query.classification = new RegExp(classification, 'i');  
         }
 
         // Find jobs based on query
