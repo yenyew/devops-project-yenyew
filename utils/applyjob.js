@@ -8,6 +8,10 @@ async function applyjob(req, res) {
         if (!phone || phone.length < 6) {
             return res.status(400).json({ message: 'Validation error: phone number must be at least 6 digits' });
         }
+
+        if (age < 18) {
+            return res.status(400).json({ message: 'Minimum age is 18 to apply.' });
+        }
  
         const newApplication = new Application({
             jobId,

@@ -25,6 +25,7 @@ async function editJob(req, res) {
       const updatedJob = await Job.findByIdAndUpdate(id, updatedData, { new: true });
       if (updatedJob) {
           return res.status(200).json(updatedJob);
+    
       } else {
           return res.status(404).json({ message: 'Job not found' });
       }
