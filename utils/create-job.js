@@ -10,6 +10,14 @@ async function addJob(req, res) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
+        if (name.length > 100) {
+            return res.status(400).json({ message: 'Job name cannot be more than 100 characters' })
+        }
+
+        if (name.length < 5) {
+            return res.status(400).json({ message: 'Job name cannot be less than 5 characters' })
+        }
+
         // Validate email format
         if (!companyEmail.includes('@') || !companyEmail.includes('.')) {
             return res.status(400).json({ message: 'Invalid email format' });
@@ -20,10 +28,26 @@ async function addJob(req, res) {
             return res.status(400).json({ message: 'Description must be at least 6 characters long' });
         }
 
+        if (description.length > 1000) {
+            return res.status(400).json({ message: 'Description must be less than 1000 characters long' });
+        }
+
         // Validate salary is a positive number
         if (isNaN(salary) || Number(salary) <= 0) {
             return res.status(400).json({ message: 'Salary must be a positive number' });
         }
+
+        // Limit salary
+        if (isNaN(salary) || Number(salary) >= 100000) {
+            return res.status(400).json({ message: 'Salary must be less than 100,000' });
+        }
+        
+
+          //Simulate unexpected server errors for testing
+          if (req.body.simulateServerError) {
+            throw new Error('Simulated server error');
+        }
+
 
         // Create and save the new job
         const newJob = new Job({
