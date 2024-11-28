@@ -7,7 +7,7 @@ async function addJob(req, res) {
  
         // Validate required fields
         if (!companyEmail.includes('@') || !companyEmail.includes('.') || description.length < 6) {
-            return res.status(400).json({ message: 'Validation error' });
+            return res.status(500).json({ message: 'Validation error' });
         }
  
         // Create and save the new job using the Job model

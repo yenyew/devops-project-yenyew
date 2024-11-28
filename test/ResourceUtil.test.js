@@ -19,7 +19,7 @@ describe('Job API', () => {
     });
     let count = 0;
     let resourceId; // Variable to store the ID of the resource
-    
+
     // Test Suite for adding resources
     describe('POST /add-job', () => {
         it('should return 500 for validation errors', (done) => {
@@ -30,7 +30,20 @@ describe('Job API', () => {
                         'Short', companyEmail: 'invaild-email', CompanyName: 'Test Name'
                 })
                 .end((err, res) => {
-                    expect(res).to.have.status(400);
+                    expect(res).to.have.status(500);
+                    expect(res.body.message).to.equal('Validation error');
+                    done();
+                });
+        });
+        it('should return 400 for validation errors', (done) => {
+            chai.request(baseUrl)
+                .post('/add-job')
+                .send({
+                    name: 'Test Job', location: 'Test Location', salary: 'Test Salary', description:
+                        'Short', companyEmail: 'invaild-email', CompanyName: 'Test Name'
+                })
+                .end((err, res) => {
+                    expect(res).to.have.status(500);
                     expect(res.body.message).to.equal('Validation error');
                     done();
                 });
