@@ -1,10 +1,10 @@
 {
     "reporter": [
-    "text",
-    "html"
+        "text",
+        "html"
     ],
     "include": [
-    "public/js/**/*.js"
+        "public/js/**/*.js"
     ],
     "reportDir": "coverage/frontend",
     "check-coverage": true,

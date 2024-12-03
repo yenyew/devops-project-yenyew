@@ -34,7 +34,7 @@ const { applyjob } = require('./utils/applyjob.js');
 app.post('/apply-job/:jobId', applyjob);
  
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + "/instrumented/index.html");
+    res.sendFile(__dirname + "/instrumented/" + startPage);
 });
  
 const server = app.listen(PORT, function () {

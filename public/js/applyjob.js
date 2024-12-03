@@ -1,36 +1,40 @@
-const Application = require('../models/application');
- 
-async function applyjob(req, res) {
-    try {
-        const { jobId } = req.params;
-        const { name, age, education, phone, email } = req.body;
- 
-        if (!phone || phone.length < 6) {
-            return res.status(400).json({ message: 'Validation error: phone number must be at least 6 digits' });
-        }
+function applyJob(jobId) {
+    $('#applyJobModal').modal('show');
+    document.getElementById('applyJobModal').setAttribute('data-job-id', jobId);
+}
 
-        if (age < 18) {
-            return res.status(400).json({ message: 'Minimum age is 18 to apply.' });
-        }
- 
-        const newApplication = new Application({
-            jobId,
-            name,
-            age,
-            education,
-            phone,
-            email
+async function submitApplication() {
+    const jobId = document.getElementById('applyJobModal').getAttribute('data-job-id');
+    const name = document.getElementById('applicantName').value.trim();
+    const age = document.getElementById('applicantAge').value;
+    const education = document.getElementById('applicantEducation').value.trim();
+    const phone = document.getElementById('applicantPhone').value.trim();
+    const email = document.getElementById('applicantEmail').value.trim();
+
+    if (!name || !age || !education || !phone || !email) {
+        alert('Please fill in all fields.');
+        return;
+    }
+
+    const applicationData = { name, age, education, phone, email };
+
+    try {
+        const response = await fetch(`/apply-job/${jobId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(applicationData)
         });
- 
-        const savedApplication = await newApplication.save();
-        return res.status(201).json(savedApplication);
+
+        const result = await response.json();
+        if (response.ok) {
+            alert('Application submitted successfully!');
+            $('#applyJobModal').modal('hide');
+        } else {
+            alert('Failed to submit application: ' + result.message);
+        }
     } catch (error) {
-        console.error("Error applying for job:", error);
-        return res.status(500).json({ message: 'An error occurred', error });
+        console.error('Error submitting application:', error);
+        alert('An error occurred while submitting the application.');
     }
 }
- 
-module.exports = {
-    applyjob
-};
- 
+window.onload = loadJobs;
