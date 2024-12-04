@@ -4,7 +4,7 @@
   "description": "part1",
   "main": "index.js",
   "scripts": {
-     "backend-test": "nyc --nycrc-path .nycrc-backend mocha --exit"
+    "backend-test": "nyc --nycrc-path .nycrc-backend mocha --exit"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +20,8 @@
     "mongodb": "^6.10.0",
     "mongoose": "^8.8.0",
     "nyc": "^17.1.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
   }
 }
