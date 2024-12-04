@@ -180,7 +180,7 @@ describe('Job Management Frontend', () => {
       cy.get('#resourceModal').should('be.visible');
   
       // Fill in the form fields
-      cy.get('#addJobName').type('Network Error Test Job');
+      cy.get('#addJobName').type('error error Test Job');
       cy.get('#addLocation').type('Network Error Location');
       cy.get('#addDescription').type('Testing network error handling');
       cy.get('#addSalary').type('4000');
